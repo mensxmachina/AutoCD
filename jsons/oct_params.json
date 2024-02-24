@@ -1,0 +1,23 @@
+{
+	"out_of_sample_protocol":{
+		"name": "KFoldCV",
+		"folds": 5,
+		"folds_to_run": 5
+		},
+		
+	"regressor":{
+		"name": "RandomForestRegressor",
+		"n_trees": 100
+		},
+
+	"classifier":{
+		"name": "RandomForestClassifier",
+		"n_trees": 100
+		},
+		
+	"sparsity_penalty" : {
+		"alpha": 0.01,
+		"n_permutations": 100
+	}
+	
+}

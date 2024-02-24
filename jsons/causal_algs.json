@@ -1,0 +1,59 @@
+{
+	"pc" : {
+			"ci_test": ["FisherZ",  "cg_lrt", "dg_lrt", "chisquare", "gsquare"],
+			"stable": [true],
+			"causal_sufficiency" : [true],
+			"time_series" :[false]
+			},
+
+	"fges" : {
+			"score": ["sem_bic_score", "bdeu", "discrete_bic", "cg_bic", "dg_bic"],
+			"causal_sufficiency" : [true],
+			"time_series" :[false]
+			},
+
+	"fci" : {
+			"ci_test": ["FisherZ",  "cg_lrt", "dg_lrt", "chisquare", "gsquare"],
+			"causal_sufficiency" : [false],
+			"time_series" :[false]
+			},
+				
+			
+	"gfci" : {
+			"ci_test": ["FisherZ", "cg_lrt", "dg_lrt", "chisquare", "gsquare"],
+			"score": ["sem_bic_score", "bdeu", "discrete_bic", "cg_bic", "dg_bic"],
+			"causal_sufficiency" : [false],
+			"time_series" :[false]
+			},
+
+	"svarfci" : {
+			"ci_test": ["FisherZ",  "cg_lrt", "dg_lrt", "chisquare", "gsquare"],
+			"causal_sufficiency" : [false],
+			"time_series" :[true]
+			},
+			
+	"svargfci" : {
+			"ci_test": ["FisherZ",  "cg_lrt", "dg_lrt", "chisquare", "gsquare"],
+			"score": ["sem_bic_score", "bdeu", "discrete_bic", "cg_bic", "dg_bic"],
+			"causal_sufficiency" : [false],
+			"time_series" :[true]
+			},
+
+
+	"PCMCI+" : {
+			"ci_test": ["ParCor", "Gsquared", "RegressionCI"],
+			"causal_sufficiency" : [true],
+			"time_series" :[true]
+			},
+			
+
+	"LPCMCI" : {
+			"ci_test": ["ParCor", "Gsquared", "RegressionCI"],
+			"causal_sufficiency" : [false],
+			"time_series" :[true]
+			}
+		
+
+}
+			
+
