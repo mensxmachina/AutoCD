@@ -37,16 +37,18 @@ class Feature_Selector():
         Returns
         -------
             selected_features (list): the indexes of the selected features
+        Note: 
+            When calling the subprocesses, try shell=False for GNU/Linux
         '''
 
         if not train_idx_name:
             subprocess.call([self.r_path, '--vanilla', os.path.join(self.path_, 'fbed_with_idx.R'),
                              self.dataset_name, target_name, config['ind_test_name'], str(config['alpha']), str(config['k'])],
-                            shell=True)
+                            shell=True) 
         else:
             subprocess.call([self.r_path, '--vanilla', os.path.join(self.path_, 'fbed_with_idx.R'),
                              self.dataset_name, target_name, config['ind_test_name'], str(config['alpha']), str(config['k']), train_idx_name],
-                            shell=True)
+                            shell=True) 
 
         selected_features_pd = pd.read_csv(os.path.join(self.path_, 'fbed_selectedVars.csv'))
         if 'sel' in selected_features_pd:
@@ -71,6 +73,9 @@ class Feature_Selector():
         Returns
         -------
             selected_features (list): the indexes of the selected features
+        Note: 
+            When calling the subprocesses, try shell=False for GNU/Linux
+        '
         '''
 
         if not train_idx_name:
