@@ -11,7 +11,6 @@ def one_directed_path(matrix, start, end, path_=[]):
             matrix(i, j) = 2 and matrix(j, i) = 3: i-->j
             matrix(i, j) = 1 and matrix(j, i) = 1: io-oj
             matrix(i, j) = 2 and matrix(j, i) = 2: i<->j
-            matrix(i, j) = 3 and matrix(j, i) = 3: i---j
             matrix(i, j) = 2 and matrix(j, i) = 1: io->j
         start(int):  the first node in the path
         end(int):  the last node in the path
