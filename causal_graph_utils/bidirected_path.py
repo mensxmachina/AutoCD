@@ -10,7 +10,6 @@ def bidirected_path(i, matrix):
                 matrix(i, j) = 2 and matrix(j, i) = 3: i-->j
                 matrix(i, j) = 1 and matrix(j, i) = 1: io-oj
                 matrix(i, j) = 2 and matrix(j, i) = 2: i<->j
-                matrix(i, j) = 3 and matrix(j, i) = 3: i---j
                 matrix(i, j) = 2 and matrix(j, i) = 1: io->j
 
     Returns:
