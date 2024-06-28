@@ -125,8 +125,6 @@ def main():
 
         files[rep]['true_pred_config'] = true_pred_config
 
-        rep += 1
-
     with open(files_name, 'wb') as outp:
         pickle.dump(files, outp, pickle.HIGHEST_PROTOCOL)
 
