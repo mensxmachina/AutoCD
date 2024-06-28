@@ -18,7 +18,7 @@ class OCT_parallel():
     Authors: kbiza@csd.uoc.gr, droubo@csd.uoc.gr
     '''
 
-    def __init__(self, dataObject,  n_jobs):
+    def __init__(self, dataObject,  n_jobs, tiers=None):
 
         '''
 
@@ -43,7 +43,10 @@ class OCT_parallel():
         self.samples = dataObject.samples
         self.is_time_series = dataObject.is_time_series
         self.data_type_info = dataObject.data_type_info
-
+        if tiers:
+            self.tiers = tiers
+        else:
+            self.tiers = None
         self.n_jobs=n_jobs
 
 
@@ -371,8 +374,8 @@ class OCT_parallel():
 
             for fold in range(self.oos_protocol['folds_to_run']):
                 library_results, mec_graph_pd, graph_pd = \
-                    causal_discovery(config, self.samples.iloc[train_inds[fold]], self.data_type_info, self.is_time_series)
-
+                    causal_discovery(config, self.samples.iloc[train_inds[fold]],
+                                     self.data_type_info, self.is_time_series, self.tiers)
                 mec_graphs_folds.append(mec_graph_pd)
                 graphs_folds.append(graph_pd)
 
@@ -408,6 +411,7 @@ class OCT_parallel():
 
         # Causal discovery with optimal configuration
         library_results, mec_graph_pd, graph_pd = \
-            causal_discovery(optimal_config, self.samples, self.data_type_info, self.is_time_series)
+            causal_discovery(optimal_config, self.samples, self.data_type_info,
+                             self.is_time_series, self.tiers)
 
         return library_results, mec_graph_pd, graph_pd, optimal_config
