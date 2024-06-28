@@ -12,17 +12,24 @@ class Tetrad():
     Author: kbiza@csd.uoc.gr
     '''
 
-    def __init__(self, data_pd, data_type_info, is_time_series):
+    def __init__(self, data_pd, data_type_info, is_time_series, tiers=None):
         '''
+        Update 5/6/2024: add prior knowledge and directlingam
         Parameters
         ----------
             data_pd(pandas Dataframe): the dataset
             data_type_info (pandas Dataframe) : information about the type of each variable (continuous or categorical)
+            tiers(list) : sorted variables into groupings that can or cannot affect each other (based on Tetrad)
+                          variables in higher-numbered tiers occur later than variables in lower-numbered tiers
+                list 0 : indexes of variables without parents (exogenous)
+                list 1 : a variable in this tier cannot be a cause of a variable in list 0
+                list 2 : a variable in this tier cannot be a cause of a variable in list 0 or 1
             is_time_series (bool): True if dataset contains temporal variables
         '''
 
         self.data_pd = data_pd
         self.data_type_info = data_type_info
+        self.tiers = tiers
         self.is_time_series = is_time_series
 
     def prepare_data(self, parameters):
@@ -231,11 +238,12 @@ class Tetrad():
 
         return score_
 
-    def _algo(self, parameters, ind_test, score):
+    def _algo(self, ds, parameters, ind_test, score):
 
         '''
         Causal discovery algorithms in Tetrad
         Args:
+            ds(Tetrad object): the dataset in Tetrad format
             parameters (dictionary): the causal configuration
             ind_test (Tetrad object) : the independence test
             score (Tetrad object) : the score
@@ -257,6 +265,8 @@ class Tetrad():
             # alg.setDepth(max_k)
         elif parameters['name'] == 'fges':
             alg = search.Fges(score)
+        elif parameters['name'] == 'directlingam':
+            alg = search.DirectLingam(ds, score)
         elif parameters['name'] == 'fci':
             alg = search.Fci(ind_test)
         elif parameters['name'] == 'fcimax':
@@ -363,6 +373,8 @@ class Tetrad():
         '''
 
         from edu.cmu.tetrad.graph import GraphTransforms
+        from edu.cmu.tetrad import data
+
 
         ds, var_map = self.prepare_data(parameters)
 
@@ -376,24 +388,38 @@ class Tetrad():
         else:
             score_ = None
 
-        alg = self._algo(parameters, ind_test, score_)
+        alg = self._algo(ds, parameters, ind_test, score_)
 
         # set knowledge
         if self.is_time_series:
             tetrad_knowledge = self.time_knowledge(ds, parameters)
             alg.setKnowledge(tetrad_knowledge)
 
-        # find the MEC graph and/or the DAG or the MAG
-        try:
-            tetrad_mec_graph = alg.search()
-        except Exception as err:
-            print(f"Unexpected {err=}, {type(err)=}")
-            return None, None, None
+        # prior knowledge
+        if isinstance(self.tiers, list) and parameters['name'] != 'directlingam':
+            knowledge = data.Knowledge()
+            for tier in range(len(self.tiers)):
+                for c in range(len(self.tiers[tier])):
+                    nodeName = 'X' + str(self.tiers[tier][c] + 1)
+                    knowledge.addToTier(tier, nodeName)
+            alg.setKnowledge(knowledge)
 
-        if parameters['causal_sufficiency']:
-            tetrad_graph = GraphTransforms.dagFromCPDAG(tetrad_mec_graph)
+        # find the MEC graph and/or the DAG or the MAG
+        if parameters['name'] != 'directlingam':
+            try:
+                tetrad_mec_graph = alg.search()
+            except Exception as err:
+                print(f"Unexpected {err=}, {type(err)=}")
+                return None, None, None
+
+            if parameters['causal_sufficiency']:
+                tetrad_graph = GraphTransforms.dagFromCPDAG(tetrad_mec_graph)
+            else:
+                tetrad_graph = GraphTransforms.pagToMag(tetrad_mec_graph)
+
         else:
-            tetrad_graph = GraphTransforms.pagToMag(tetrad_mec_graph)
+            tetrad_graph = alg.search()
+            tetrad_mec_graph = GraphTransforms.cpdagForDag(tetrad_graph)
 
         mec_graph_pd = self.output_to_array(tetrad_mec_graph, var_map)
         graph_pd = self.output_to_array(tetrad_graph, var_map)
