@@ -4,7 +4,7 @@ from AutoCD.causal_discovery.class_Tigramite import *
 from AutoCD.data_utils.functions_data import *
 
 
-def causal_discovery(configuration, samples, data_type_info, is_time_series):
+def causal_discovery(configuration, samples, data_type_info, is_time_series, tiers=None):
 
     '''
     Causal discovery with a given a causal configuration
@@ -31,13 +31,13 @@ def causal_discovery(configuration, samples, data_type_info, is_time_series):
         In any case (temporal or cross sectional data)
             mec_graph_pd and graph_pd are matrices with the following notation:
                 matrix(i, j) = 2 and matrix(j, i) = 3: i-->j
-                matrix(i, j) = 1 and matrix(j, i) = 1: io-oj    in PAGs
+                matrix(i, j) = 1 and matrix(j, i) = 1: io-oj    in PAGs or i---j in PDAGs
                 matrix(i, j) = 2 and matrix(j, i) = 2: i<->j    in MAGs and PAGs
-                matrix(i, j) = 3 and matrix(j, i) = 3: i---j    in PDAGs
                 matrix(i, j) = 2 and matrix(j, i) = 1: io->j    in PAGs
     '''
 
-    tetrad = ['pc', 'cpc', 'fges', 'fci', 'fcimax', 'rfci', 'cfci', 'gfci', 'svarfci', 'svargfci']
+    tetrad = ['pc', 'cpc', 'fges', 'directlingam',
+             'fci', 'fcimax', 'rfci', 'cfci', 'gfci', 'svarfci', 'svargfci']
     tigramite = ['PCMCI', 'PCMCI+', 'LPCMCI']
 
     if is_time_series:
@@ -68,7 +68,7 @@ def causal_discovery(configuration, samples, data_type_info, is_time_series):
 
     print('\trun causal discovery with ', configuration['name'])
     if configuration['name'] in tetrad:
-        alg = Tetrad(samples_tetrad, data_type_info_tetrad, is_time_series)
+        alg = Tetrad(samples_tetrad, data_type_info_tetrad, is_time_series, tiers)
 
     elif configuration['name'] in tigramite:
         alg = Tigramite(samples, var_names_lagged, data_type_info)
