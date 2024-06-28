@@ -80,22 +80,22 @@ class CausalConfigurator():
                                         causal_configs.append({"name": algi_name} | v | k | s | l)
 
                 else:
-                    for l in self._dict_product(self.n_lags):
+                    if 'ci_test' in v.keys() and 'score' not in v.keys():
+                        if v['ci_test'] in ci_touse.keys():
+                            for k in self._dict_product(ci_touse[v['ci_test']]):
+                                causal_configs.append({"name": algi_name} | v | k )
 
-                        if 'ci_test' in v.keys() and 'score' not in v.keys():
-                            if v['ci_test'] in ci_touse.keys():
-                                for k in self._dict_product(ci_touse[v['ci_test']]):
-                                    causal_configs.append({"name": algi_name} | v | k )
+                    elif 'ci_test' not in v.keys() and 'score' in v.keys():
+                        if v['score'] in score_touse.keys():
+                            for s in self._dict_product(score_touse[v['score']]):
+                                causal_configs.append({"name": algi_name} | v | s )
 
-                        elif 'ci_test' not in v.keys() and 'score' in v.keys():
-                            if v['score'] in score_touse.keys():
+                    elif 'ci_test' in v.keys() and 'score' in v.keys():
+                        if v['ci_test'] in ci_touse.keys() and v['score'] in score_touse.keys():
+                            for k in self._dict_product(ci_touse[v['ci_test']]):
                                 for s in self._dict_product(score_touse[v['score']]):
-                                    causal_configs.append({"name": algi_name} | v | s )
-
-                        elif 'ci_test' in v.keys() and 'score' in v.keys():
-                            if v['ci_test'] in ci_touse.keys() and v['score'] in score_touse.keys():
-                                for k in self._dict_product(ci_touse[v['ci_test']]):
-                                    for s in self._dict_product(score_touse[v['score']]):
-                                        causal_configs.append({"name": algi_name} | v | k | s )
+                                    causal_configs.append({"name": algi_name} | v | k | s )
+                    else:
+                        causal_configs.append({"name": algi_name} | v )
 
         return causal_configs
