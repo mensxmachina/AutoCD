@@ -8,9 +8,9 @@ def bidirected_path(i, matrix):
         i (int): the starting node (not a list of integer!!)
         matrix (numpy array): matrix of size N*N where N is the number of nodes in tetrad_graph
                 matrix(i, j) = 2 and matrix(j, i) = 3: i-->j
-                matrix(i, j) = 1 and matrix(j, i) = 1: io-oj
-                matrix(i, j) = 2 and matrix(j, i) = 2: i<->j
-                matrix(i, j) = 2 and matrix(j, i) = 1: io->j
+                matrix(i, j) = 1 and matrix(j, i) = 1: io-oj    in PAGs or i---j in PDAGs
+                matrix(i, j) = 2 and matrix(j, i) = 2: i<->j    in MAGs and PAGs
+                matrix(i, j) = 2 and matrix(j, i) = 1: io->j    in PAGs
 
     Returns:
         list_nodes (list): the nodes that are reachable in any bidirected path starting from node i
