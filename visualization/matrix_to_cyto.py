@@ -3,20 +3,21 @@ import numpy as np
 import pandas as pd
 
 
-def matrix_to_cyto(matrix_pd):
+def matrix_to_cyto(matrix_pd, graph_type=None):
     """
     Converts matrix to list of edges according to Cytoscape inputs
     Author: kbiza@csd.uoc.gr
     Args:
         matrix_pd(pandas Dataframe): matrix of size N*N where N is the number of nodes
             matrix(i, j) = 2 and matrix(j, i) = 3: i-->j
-            matrix(i, j) = 1 and matrix(j, i) = 1: io-oj  should appear only in PAGs
-            matrix(i, j) = 2 and matrix(j, i) = 2: i<->j  should appear only in MAGs and PAGs
-            matrix(i, j) = 3 and matrix(j, i) = 3: i---j  should appear only in PDAGs
-            matrix(i, j) = 2 and matrix(j, i) = 1: io->j
+            matrix(i, j) = 1 and matrix(j, i) = 1: io-oj  in PAGs or i---j in PDAGs
+            matrix(i, j) = 2 and matrix(j, i) = 2: i<->j  in MAGs and PAGs
+            matrix(i, j) = 2 and matrix(j, i) = 1: io->j  in PAGs
+
+        graph_type(str) : dag, pdag, mag, pag
 
     Returns:
-        cyto_edges(pandas Dataframe): ontains information about all edges,  size: number of edges*3
+        cyto_edges(pandas Dataframe): contains information about all edges,  size: number of edges*3
             1st column : source
             2nd column : target
             3rd column : interaction_type
@@ -54,6 +55,12 @@ def matrix_to_cyto(matrix_pd):
                     jToi = 'Tail'
                 else:
                     raise ValueError('wrong notation on input matrix of the graph')
+
+
+                if graph_type == 'pdag':
+                    if iToj=='Circle' and jToi=='Circle':
+                        iToj = 'Tail'
+                        jToi = 'Tail'
 
                 interaction = jToi + '-' + iToj
 
