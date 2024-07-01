@@ -20,6 +20,13 @@
 			"causal_sufficiency" : [true],
 			"time_series" :[false]
 			},
+
+	
+	"directlingam" : {
+			"score": ["sem_bic_score", "bdeu", "discrete_bic", "cg_bic", "dg_bic"],
+			"causal_sufficiency" : [true],
+			"time_series" :[false]
+			},
 			
 
 	"fci" : {
