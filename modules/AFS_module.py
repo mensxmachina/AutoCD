@@ -23,17 +23,17 @@ def AFS_module(data_pd, target_name, n_lags=None):
         dataObj (class object) : contains the preprocessed reduced data
     '''
 
-
-    # create predictive configurations
-    pred_confirator = PredictiveConfigurator()
-    pred_configs = pred_confirator.create_predictive_configs()
-
     # data preprocessing
     #   currently AFS supports basic data transformations
     data_type = get_data_type(data_pd)
     transformed_data = transform_data(data_pd, data_type, 'standardize')
 
     dataObj = data_object(transformed_data,'AutoCD_data', target_name, n_lags)
+
+    # create predictive configurations
+    pred_confirator = PredictiveConfigurator()
+    pred_configs = pred_confirator.create_predictive_configs(dataObj)
+    
     est_mb_idx, est_mb_names_, max_avg_pred, model, opt_pred_config = AFS().run_AFS(pred_configs, dataObj)
 
     if isinstance(n_lags, int):
